@@ -15,6 +15,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   int selectedSize = 0;
 
   void addToCart() {
+    // Checking whether the size been selected
     if (selectedSize != 0) {
       bool hasProductAdded = Provider.of<CartProvider>(
         context,
@@ -27,6 +28,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         'company': widget.product['company'],
         'size': selectedSize,
       });
+
+      // Checking whether the product has added
       if (hasProductAdded) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -65,9 +68,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Details"), centerTitle: true),
+
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Title
           Text(
             widget.product['title'] as String,
             style: Theme.of(context).textTheme.titleLarge,
@@ -78,6 +83,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             child: Image.asset(widget.product['imageUrl'] as String),
           ),
           const Spacer(flex: 2),
+
+          // Sizes and Add To Cart
           Container(
             height: 250,
             decoration: BoxDecoration(
@@ -91,6 +98,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
                 SizedBox(height: 10),
+
+                // Sizes
                 SizedBox(
                   height: 50,
                   child: ListView.builder(
@@ -124,6 +133,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     },
                   ),
                 ),
+
+                // Add To Cart Button
                 Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: ElevatedButton(

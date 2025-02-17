@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
         title: "Shopping App",
         theme: ThemeData(
           fontFamily: "Lato",
+
           colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromRGBO(254, 206, 1, 1),
             primary: const Color.fromRGBO(254, 206, 1, 1),
@@ -29,19 +30,19 @@ class MyApp extends StatelessWidget {
             prefixIconColor: Color.fromRGBO(119, 119, 119, 1),
           ),
 
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
             titleLarge: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
             titleMedium: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             bodySmall: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
 
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
             titleTextStyle: TextStyle(fontSize: 20, color: Colors.black),
           ),
 
           useMaterial3: true,
         ),
-        home: HomePage(),
+        home: const HomePage(),
       ),
     );
   }

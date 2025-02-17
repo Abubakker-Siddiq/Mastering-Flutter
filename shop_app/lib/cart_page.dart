@@ -10,6 +10,8 @@ class CartPage extends StatelessWidget {
     final cart = Provider.of<CartProvider>(context).cart;
 
     return Scaffold(
+
+      // AppBar
       appBar: AppBar(
         title: Text(
           "Cart",
@@ -17,15 +19,23 @@ class CartPage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
+
+      // Products Detail
       body: ListView.builder(
         itemCount: cart.length,
         itemBuilder: (context, index) {
           final cartItem = cart[index];
+
+          // Product details
           return ListTile(
+
+            // Picture
             leading: CircleAvatar(
               backgroundImage: AssetImage(cartItem["imageUrl"] as String),
               radius: 30,
             ),
+
+            // Title
             title: Text(
               cartItem["title"] as String,
               style: Theme.of(context).textTheme.bodySmall,
@@ -34,12 +44,16 @@ class CartPage extends StatelessWidget {
               "Size : ${cartItem['size']} ",
               style: TextStyle(fontSize: 16),
             ),
+
+            // Delete Icon Button
             trailing: IconButton(
               onPressed: () {
                 showDialog(
                   context: context,
                   barrierDismissible: false,
                   builder: (context) {
+
+                    // Alert Dialog box for confirmation
                     return AlertDialog(
                       title: Text(
                         "Delete Product",
@@ -72,14 +86,18 @@ class CartPage extends StatelessWidget {
                         ),
                       ],
                     );
+
                   },
                 );
               },
               icon: Icon(Icons.delete, color: Colors.red),
             ),
+
           );
+
         },
       ),
+
     );
   }
 }
