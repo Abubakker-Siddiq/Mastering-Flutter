@@ -16,7 +16,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   void addToCart() {
     if (selectedSize != 0) {
-      context.read<CartProvider>().addProduct({
+      bool hasProductAdded = Provider.of<CartProvider>(
+        context,
+        listen: false,
+      ).addProduct({
         'id': widget.product['id'],
         'title': widget.product['title'],
         'price': widget.product['price'],
@@ -24,17 +27,31 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
         'company': widget.product['company'],
         'size': selectedSize,
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            "Product added successfully",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      if (hasProductAdded) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Durations.long4,
+            content: Text(
+              "Product added successfully",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            duration: Durations.long4,
+            content: Text(
+              "Product with the same size has already been added",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
+          duration: Durations.long4,
           content: Text(
             "Please select a size",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
