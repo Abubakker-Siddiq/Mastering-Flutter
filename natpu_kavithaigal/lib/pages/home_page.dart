@@ -2,11 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:natpu_kavithaigal/pages/bookmarks_page.dart';
 
 import '../utils/secrets.dart';
-import 'blog_page.dart';
 import 'favorites_page.dart';
-import 'home_quotes.dart';
+import 'home_quotes_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,21 +17,33 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late String clickedPopMenuItem;
-  late List<dynamic> data;
+  late Map<String, dynamic> data;
+  List<String> quotes = [];
   int _currentBottomNavigationBarIndex = 0;
-  late int _blogIndex;
+  late Future<void> future;
+
+
+  @override
+  void initState() {
+    super.initState();
+    future = getData();
+  }
 
   Future<void> getData() async {
     try {
-      final url = Uri.parse('https://api.api-ninjas.com/v1/quotes');
-      final response = await http.get(url, headers: {'X-Api-Key': APIKey});
-      if (response.statusCode == 200) {
-        data = jsonDecode(response.body);
+      final response = await http.get(Uri.parse(HOME_PAGE_API));
+      data = jsonDecode(response.body);
+
+      if (data['status'] == "success") {
+        for (int i = 0; i < (data['data'] as List<dynamic>).length; i++) {
+          final String quote = data['data'][i]["post_content"] as String;
+          quotes.add(quote);
+        }
       } else {
-        throw ("Connect to the internet");
+        throw "Connect to the internet";
       }
     } catch (e) {
-      throw ("Connect to the internet");
+      throw "Connect to the internet";
     }
   }
 
@@ -43,37 +55,12 @@ class _HomePageState extends State<HomePage> {
           "Natpu Kavithaigal",
           style: Theme.of(context).textTheme.titleLarge,
         ),
-        actions: [
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert),
-            onSelected: (value) {
-              setState(() {
-                _blogIndex = int.parse(value);
-              });
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) {
-                    return BlogPage(blogIndex: _blogIndex);
-                  },
-                ),
-              );
-            },
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem<String>(value: '0', child: Text("Block 1-50")),
-                PopupMenuItem<String>(value: '1', child: Text("Block 51-100")),
-                PopupMenuItem<String>(value: '2', child: Text("Block 101-150")),
-                PopupMenuItem<String>(value: '3', child: Text("Block 151-200")),
-              ];
-            },
-          ),
-        ],
+        centerTitle: true,
       ),
 
       // Quotes
       body: FutureBuilder(
-        future: getData(),
+        future: future,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -99,16 +86,29 @@ class _HomePageState extends State<HomePage> {
             );
           }
 
-          return IndexedStack(
-            index: _currentBottomNavigationBarIndex,
-            children: [HomeQuotes(), const FavouritesPage()],
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IndexedStack(
+              index: _currentBottomNavigationBarIndex,
+              children: [
+                HomeQuotesPage(quotes: quotes),
+                const BookmarksPage(),
+                const FavouritesPage(),
+              ],
+            ),
           );
         },
       ),
 
       bottomNavigationBar: BottomNavigationBar(
-        selectedFontSize: 0,
-        unselectedFontSize: 0,
+        selectedLabelStyle: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontSize: 17,
+          fontWeight: FontWeight.bold,
+        ),
         currentIndex: _currentBottomNavigationBarIndex,
         onTap: (value) {
           setState(() {
@@ -119,12 +119,17 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home_outlined, size: 35),
             activeIcon: Icon(Icons.home, size: 35),
-            label: "",
+            label: "Home",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bookmark_border, size: 35),
+            activeIcon: Icon(Icons.bookmark, size: 35),
+            label: "Saved",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.favorite_border, size: 35),
             activeIcon: Icon(Icons.favorite, size: 35),
-            label: "",
+            label: "Favorites",
           ),
         ],
       ),

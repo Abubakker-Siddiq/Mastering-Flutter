@@ -1,1 +1,2 @@
-final String APIKey = "89O4gu1eznAHVtbeSY6WNg==hXf5847R8xs93zKY";
+final String HOME_PAGE_API = "https://kavithaimazhai.com/natpukavithaigal/index.php";
+final String ALL_POEMS_API = "https://kavithaimazhai.com/natpukavithaigal/all_natpu_kavithaigal.php";
